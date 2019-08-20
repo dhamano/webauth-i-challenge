@@ -16,6 +16,13 @@ router.get('/', mw.restrict, (req, res) => {
     })
 });
 
+router.get('/logout', (req, res) => {
+  if(req.session && req.session.loggedIn) {
+    req.session.destroy();
+    res.status(200).json({ message: 'Your have logged out succesfully' });
+  }
+})
+
 router.post('/register', mw.checkUsernameAndPass, (req, res) => {
   const user = req.body;
 
@@ -37,6 +44,8 @@ router.post('/login', mw.checkUsernameAndPass, (req, res) => {
     .first()
     .then( user => {
       if(user && bcrypt.compareSync(password, user.password)) {
+        req.session.username = user.username;
+        req.session.loggedIn = true;
         res.status(200).json({ message: `Welcome ${user.username}!` });
       } else {
         res.status(401).json({ message: 'Invalid Credentails' });

@@ -1,7 +1,4 @@
-const knex = require('knex');
-const config = require('../../knexfile');
-
-const usersDB = knex(config.development);
+const usersDB = require('../../data/dbconfig');
 
 module.exports = {
   find,
